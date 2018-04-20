@@ -5,20 +5,19 @@ import json
 import sys
 import codecs
 import secrets
-from bs4 import BeautifulSoup ################################333
+from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ElementTree
-import plotly.plotly as py #################################3
-import plotly.graph_objs as go ##################333
-import plotly.figure_factory as ff ######################3
+import plotly.plotly as py
+import plotly.graph_objs as go
+import plotly.figure_factory as ff
 import random
 import datetime
-import numpy ########################3333
-import pandas ####################333
+import numpy
+import pandas
 import collections
 import re
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
 
-AUTHORS = {}
 COLORS = ['rgb(230, 25, 75)', 'rgb(60, 180, 75)', 'rgb(255, 225, 25)',
         'rgb(0, 130, 200)', 'rgb(245, 130, 48)', 'rgb(145, 30, 180)',
         'rgb(70, 240, 240)', 'rgb(240, 50, 230)', 'rgb(210, 245, 60)',
@@ -44,6 +43,9 @@ try:
 except:
     CACHE_DICTION = {}
 
+# sets up the database
+# params: none
+# returns: none
 def setup_db():
     # connect to the new database
     conn = sqlite.connect(DBNAME)
@@ -143,7 +145,6 @@ def make_request_using_cache(url, wiki = False, book = False):
 # params: name of author eg. <First> <Last>
 # returns: total number of books written as well as list with book info
 def search_books(name):
-    books = []
     authID = ''
     conn = sqlite.connect(DBNAME)
     cur = conn.cursor()
@@ -163,14 +164,11 @@ def search_books(name):
     searchUrl = good_reads_book_url.format(authID, secrets.good_reads_key)
     authorXml = make_request_using_cache(searchUrl, book = True)
     root = ElementTree.fromstring(authorXml)
-    for child in root.iter('books'):
-        totalBooks = child.attrib['total']
 
     for bookItem in root.find('author').find('books').findall('book'):
         title = bookItem.find('title').text
         publishYear = bookItem.find('publication_year').text
         pageCount = bookItem.find('num_pages').text
-        books.append([name, title, publishYear, pageCount])
         insertion = (None, title, publishYear, pageCount, int(dbID))
         statement = 'INSERT INTO "Books" '
         statement += 'VALUES (?, ?, ?, ?, ?)'
@@ -178,7 +176,6 @@ def search_books(name):
         conn.commit()
 
     conn.close()
-    return(totalBooks,books)
 
 # Searches omdb for movies with the title of the author in them
 # params: name of author eg. <First> <Last>
@@ -203,9 +200,8 @@ def search_movies(name):
             cur.execute(statement, insertion)
             conn.commit()
     except:
-        return('None')
+        return
     conn.close()
-    return movies
 
 # Scrapes wikipedia page of author
 # params: name of author eg. <First> <Last>
@@ -221,7 +217,7 @@ def search_wiki(name):
     if info_table == None:
         info_table = page_soup.find('table', class_='infobox biography vcard')
     if info_table == None:
-        return('No Wiki')
+        return
 
     for tr in info_table.find_all('tr'):
         ths = tr.find_all('th')
@@ -246,7 +242,6 @@ def search_wiki(name):
     cur.execute(statement, insertion)
     conn.commit()
     conn.close()
-    return(wiki)
 
 def clear_db():
     setup_db()
@@ -255,14 +250,19 @@ def clear_db():
 # params: name of author eg. <First> <Last>
 # returns: none
 def search_all(name):
-    wiki = search_wiki(name)
-    bookList = search_books(name)
-    movieList = search_movies(name)
-    AUTHORS[name] = {'Books':bookList, 'Movies':movieList, 'Lifespan':wiki}
+    search_wiki(name)
+    search_books(name)
+    search_movies(name)
 
+# Calls search all specifically when being used by user
+# params: name of author
+# returns: none
 def user_search(name):
     search_all(name)
 
+# Creates Plotly graphs about book publications from info from database
+# params: none
+# returns: none
 def user_timeline():
     conn = sqlite.connect(DBNAME)
     cur = conn.cursor()
@@ -349,7 +349,9 @@ def user_timeline():
     figBar = go.Figure(data=dataBar, layout=layoutBar)
     py.plot(figBar, filename = 'average-page-counts')
 
-
+# Creates Plotly graphs about author's lifespans from info from database
+# params: none
+# returns: none
 def user_lifespan():
     conn = sqlite.connect(DBNAME)
     cur = conn.cursor()
@@ -374,6 +376,9 @@ def user_lifespan():
     fig = ff.create_gantt(data, colors=colors, index_col='Resource', title='Author Lifespans (*Alive)', reverse_colors=True, show_colorbar=True)
     py.plot(fig, filename='author-lifespans')
 
+# Creates Plotly graphs about movies titled after authros from info from database
+# params: none
+# returns: none
 def user_movie():
     conn = sqlite.connect(DBNAME)
     cur = conn.cursor()
@@ -468,6 +473,9 @@ def user_movie():
     fig2 = go.Figure(data=data2, layout=layout2)
     py.plot(fig2, filename='time-between')
 
+# Creates Plotly graph concerning common words from info from database
+# params: none
+# returns: none
 def user_words():
     data = []
     conn = sqlite.connect(DBNAME)
@@ -489,9 +497,7 @@ def user_words():
     for c in counter.most_common():
         sortedWords.append(c[0])
         sortedValues.append(c[1])
-        #top5 += 1
-        #if top5 > 5:
-        #    break
+
     data.append(
         go.Pie(
             hole=0.6,
@@ -511,6 +517,9 @@ def user_words():
     fig = go.Figure(data=data, layout=layout)
     py.plot(fig, filename='title-words')
 
+# Populates the database with a sample search of authors
+# params: integer that describes how many authors to include
+# returns: none
 def sample_search(num):
     clear_db()
     i = 0
@@ -524,6 +533,9 @@ def sample_search(num):
             break
     return
 
+# prints a help statement
+# params: none
+# returns: none
 def user_help():
     toPrint = '''
             How to Use The Author Comparison Program...
@@ -569,6 +581,9 @@ def user_help():
     '''
     print(toPrint)
 
+# checks if a command is valid
+# params: user command
+# returns: True if valid, False if not
 def check_command(comm):
     splitName = comm.split()
     if splitName[0].lower() == 'search':
@@ -588,6 +603,9 @@ def check_command(comm):
     else:
         return True
 
+# Runs while user has not typed 'exit' and prompts them for their commands
+# params: none
+# returns: none
 def interactive_prompt():
     response = ''
     print('Welcome to the Author Comparison Program')

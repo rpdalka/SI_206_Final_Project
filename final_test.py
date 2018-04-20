@@ -46,9 +46,9 @@ class TestAuthorTable(unittest.TestCase):
             WHERE DeathDate="Alive"
         '''
         results = cur.execute(sql)
-        result_list = results.fetchall()
+        results_list = results.fetchall()
 
-        self.assertIn(('Stephen King',), result_list)
+        self.assertIn(('Stephen King',), results_list)
         self.assertEqual(len(results_list), 4)
 
 class TestBookTable(unittest.TestCase):
@@ -80,6 +80,7 @@ class TestBookTable(unittest.TestCase):
         results_list = results.fetchall()
 
         self.assertIn(('Fear and Loathing in Las Vegas',), results_list)
+        self.assertFalse('Cujo' in results_list)
         self.assertEqual(len(results_list), 30)
 
 class TestMovieTable(unittest.TestCase):
