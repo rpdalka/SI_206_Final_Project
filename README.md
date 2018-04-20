@@ -26,6 +26,7 @@ How the Program Runs
     >When a user searches a new author, a function 'user_search' is called and calls the three sub-searches, 'search_books', 'search_movies', and 'search_wiki'. These sub-searches place the data they find into the database as they run.
 
 >There are seven other main functions that are called when a user prompts them.
+
     >'user_timeline' searches the database and creates graphs showing information about book releases from all the authors currently in the database.
     >'user_lifespan' searches the database and creates a graph showing the lifespans of all the authors in the database.
     >'user_movie' searches the database and displays information about the movies that have been titled after authors in the database
