@@ -627,7 +627,10 @@ def interactive_prompt():
             elif response.lower() == 'clear searches':
                 clear_db()
             elif splitResp[0].lower() == 'example' and splitResp[1].lower() == 'search':
-                sample_search(int(splitResp[2]))
+                try:
+                    sample_search(int(splitResp[2]))
+                except:
+                    print('Command not recognized, please try again')
             elif response.lower() == 'help':
                 user_help()
             elif response.lower() == 'exit':
