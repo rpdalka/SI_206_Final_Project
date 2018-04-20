@@ -21,29 +21,19 @@ How the Program Runs
 
 >Database Setup
   
-  >When the program launches, the function 'setup_db' runs. This creates the database and all the tables in the database.
-    
-  >Next a function 'interactive_prompt' runs. This function takes in user commands and processes them with the correct functions.
-    
-  >When a user searches a new author, a function 'user_search' is called and calls the three sub-searches, 'search_books', 'search_movies', and 'search_wiki'. These sub-searches place the data they find into the database as they run.
-    
-  >There are seven other main functions that are called when a user prompts them.
-  
-  >'user_timeline' searches the database and creates graphs showing information about book releases from all the authors currently in the database.
-    
-  >'user_lifespan' searches the database and creates a graph showing the lifespans of all the authors in the database.
-    
-  >'user_movie' searches the database and displays information about the movies that have been titled after authors in the database
-    
-  >'user_words' records the commonality among words appearing within the titles of all the books in the database and displays them on a pie chart.
-    
-  >'clear_db' will clear the database of any and all searches the user has thus far performed
-    
-  >'sample_search' will populate the database with a list of preselected authors and their related information
-    
-  >'user_help' will print a helpful message regarding how to use the program.
-    
-  >When the user enters 'exit' the program will end its processes and print a goodbye message
+    >When the program launches, the function 'setup_db' runs. This creates the database and all the tables in the database.
+    >Next a function 'interactive_prompt' runs. This function takes in user commands and processes them with the correct functions.
+    >When a user searches a new author, a function 'user_search' is called and calls the three sub-searches, 'search_books', 'search_movies', and 'search_wiki'. These sub-searches place the data they find into the database as they run.
+
+>There are seven other main functions that are called when a user prompts them.
+    >'user_timeline' searches the database and creates graphs showing information about book releases from all the authors currently in the database.
+    >'user_lifespan' searches the database and creates a graph showing the lifespans of all the authors in the database.
+    >'user_movie' searches the database and displays information about the movies that have been titled after authors in the database
+    >'user_words' records the commonality among words appearing within the titles of all the books in the database and displays them on a pie chart.
+    >'clear_db' will clear the database of any and all searches the user has thus far performed
+    >'sample_search' will populate the database with a list of preselected authors and their related information
+    >'user_help' will print a helpful message regarding how to use the program.
+    >When the user enters 'exit' the program will end its processes and print a goodbye message
 
 User Guide:
 How to Use The Author Comparison Program...
