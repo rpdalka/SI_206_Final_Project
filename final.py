@@ -462,9 +462,6 @@ def user_movie():
     ]
     layout2 = go.Layout(
         title='Number of Years Between<br>Last Book and First Movie',
-        yaxis = dict(
-            range=[-1*(abs(max(timeDiff,key=abs))), abs(max(timeDiff,key=abs))]
-        )
     )
 
     fig1 = go.Figure(data=data1, layout=layout1)
@@ -643,7 +640,6 @@ def interactive_prompt():
             else:
                 print('Command not recognized, please try again')
     print('Goodbye! :)')
-
 
 setup_db()
 if __name__ == "__main__":
